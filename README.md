@@ -45,6 +45,7 @@ yarn build
 
 ## Интерфейсы
 
+```
 interface IEventEmitter {
     emit: (event: string, data: unknown) => void;
 }
@@ -103,3 +104,4 @@ description: HTMLElement;
 button: HTMLButtonElement;
 render(total: number): HTMLElement;
 }
+```
