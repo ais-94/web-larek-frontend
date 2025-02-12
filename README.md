@@ -3,11 +3,13 @@
 Стек: HTML, SCSS, TS, Webpack
 
 Структура проекта:
+
 - src/ — исходные файлы проекта
 - src/components/ — папка с JS компонентами
 - src/components/base/ — папка с базовым кодом
 
 Важные файлы:
+
 - src/pages/index.html — HTML-файл главной страницы
 - src/types/index.ts — файл с типами
 - src/index.ts — точка входа приложения
@@ -16,6 +18,7 @@
 - src/utils/utils.ts — файл с утилитами
 
 ## Установка и запуск
+
 Для установки и запуска проекта необходимо выполнить команды
 
 ```
@@ -29,6 +32,7 @@ npm run start
 yarn
 yarn start
 ```
+
 ## Сборка
 
 ```
@@ -41,60 +45,90 @@ npm run build
 yarn build
 ```
 
-
-
-
-
 ## Проектирование архитектуры веб-приложения
-Код реализован на паттерне программирования MVP (Model-View-Presenter).  
-Модель (Model) - слой данных  
-Представление (View) слой отображения, интерфейс для взаимодействия с пользователем  
-Презентер (Presenter) слушает события в пользовательском интерфейсе и принимает решение, извлекает данные из модели.
 
-### Классы с группировкой по слоям.  
-Слой модели:
-Класс EventEmitter  
-Модель данных: Брокер событий 
-Методы:
-on - Установить обработчик на событие
-off - Снять обработчик с события
-emit - Инициировать событие с данными
- onAll - Слушать все события
-offAll - Сбросить все обработчики
-trigger - Сделать коллбек триггер, генерирующий событие при вызове
+** Код реализован на паттерне программирования MVP (Model-View-Presenter)
+
+#### Модель (Model) - слой данных**
+
+#### Представление (View) слой отображения, интерфейс для взаимодействия с пользователем**
+
+#### Презентер (Presenter) слушает события в пользовательском интерфейсе и принимает решение, извлекает данные из модели**
+
+### Классы с группировкой по слоям.
+
+ #### Слой модели:
+
+#### Класс EventEmitter
+
+#### Модель данных: Брокер событий
+
+#### Методы:
+
+#### on - Установить обработчик на событие
+
+#### off - Снять обработчик с события
+
+#### emit - Инициировать событие с данными
+
+#### onAll - Слушать все события
+
+#### offAll - Сбросить все обработчики
+
+#### -trigger - Сделать коллбек триггер, генерирующий событие при вызове
+
+
 ```
    interface IEvents {
     on<T extends object>(event: EventName, callback: (data: T) => void): void;
     emit<T extends object>(event: string, data?: T): void;
     trigger<T extends object>(event: string, context?: Partial<T>): (data: T) => void;
 }
- ```  
-Класс OrderModel  - управляет формированием способов оплаты и адресов
-Методы: 
-setOrderData(user: UserAPI): void - сохраняет данные формы заказа._  
+```
 
-Слой представления: 
-Класс Modal  - управляет отображением модальных окон.
+Класс OrderModel - управляет формированием способов оплаты и адресов
+
 Методы:
+
+setOrderData(user: UserAPI): void - сохраняет данные формы заказа.
+
+Слой представления:
+
+Класс Modal - управляет отображением модальных окон.
+
+Методы:
+
 open() - открыть окно.
+
 close() - закрыть окно.
 
-Класс BasketView  управляет отображением корзины
+Класс BasketView управляет отображением корзины
+
 Методы:  
+
 renderHeaderBasketCounter отображает список товаров и общую стоимость
-renderSumAllProducts - сохраняет и устанавливает сумму товаров в корзине.
+
+renderSumAllProducts - сохраняет и устанавливает сумму товаров в корзине
+
 
 Класс Card – класс отображения карточки товара
- Методы:
+
+Методы:
+
 CardId - id товара.
+
 CardTitle - название товара
+
 CardImage – изображение товара
+
 CardCategory - категорию товара
+
 CardPrice – стоимость товара
 
 Слой презентера:
 Класс ProductItem - обрабатывает данные товара
 Интерфейс данных товара
+
 ```export interface IProductItem {
   id: string;
   description: string;
@@ -104,7 +138,9 @@ CardPrice – стоимость товара
   price: number | null;
 }
 ```
+
 Класс BasketModel работа с данными полученными от пользователя
+
 ```
 interface IBasketModel {
     items: Map<string, number>;
@@ -128,7 +164,8 @@ class BasketModel implements IBasketModel {
     }
 }
 ```
-Класс OrderForm - хранит данные полученные от пользователя
+
+-Класс OrderForm - хранит данные полученные от пользователя
 
 ```
 interface IOrderForm {
@@ -138,9 +175,10 @@ phone: string;
 email: string;
 total: number;
 }
- ```   
+```
 
 Templates
+
 ```
 const OrderSuccessTemplate = document.querySelector('#success') as HTMLTemplateElement;
 const cardCatalogTemplate = document.querySelector('#card-catalog') as HTMLTemplateElement;
@@ -168,7 +206,7 @@ render(total: number): HTMLElement;
 }
 ```
 
-  //Интерфейс отображения корзины
+//Интерфейс отображения корзины
 export interface IBasket {
 basket: HTMLElement;
 title: HTMLElement;
@@ -178,6 +216,8 @@ basketPrice: HTMLElement;
 headerBasketButton: HTMLButtonElement;
 headerBasketCounter: HTMLElement;
 }
+
 ```
 
 
+```
