@@ -2,8 +2,8 @@ import './scss/styles.scss';
 /*
 interface IBasketModel {
     items: Map<string, number>;
-    add[id: string]: void;
-    remove[id: string]: void;
+    add(id: string): void;
+    remove(id: string): void;
 }
 
 interface IEventEmitter {
@@ -52,7 +52,7 @@ payment: string;
 address: string;
 phone: string;
 email: string;
-total: string | number;
+total: number;
 }
 
 
@@ -90,3 +90,18 @@ description: HTMLElement;
 button: HTMLButtonElement;
 render(total: number): HTMLElement;
 }*/
+
+
+import { CDN_URL, API_URL } from './utils/constants';
+import { EventEmitter } from './components/base/events';
+
+import { ensureElement } from './utils/utils';
+
+const OrderSuccessTemplate = document.querySelector('#success') as HTMLTemplateElement;
+const cardCatalogTemplate = document.querySelector('#card-catalog') as HTMLTemplateElement;
+const cardPreviewTemplate = document.querySelector('#card-preview') as HTMLTemplateElement;
+const cardBasketTemplate = document.querySelector('#card-basket') as HTMLTemplateElement;
+const basketTemplate = document.querySelector('#basket') as HTMLTemplateElement;
+const OrderFormTemplate = document.querySelector('#order') as HTMLTemplateElement;
+const contactsTemplate = document.querySelector('#contacts') as HTMLTemplateElement;
+
