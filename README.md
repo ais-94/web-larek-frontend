@@ -21,27 +21,26 @@
 
 Для установки и запуска проекта необходимо выполнить команды
 
-```
+```sh
 npm install
 npm run start
 ```
-
 или
 
-```
+```sh
 yarn
 yarn start
 ```
 
 ## Сборка
 
-```
+```sh
 npm run build
 ```
 
 или
 
-```
+```sh
 yarn build
 ```
 
@@ -49,9 +48,9 @@ yarn build
 
 ** Код реализован на паттерне программирования MVP (Model-View-Presenter)
 
-Модель (Model) - слой данных**
+Модель (Model) - слой данных: изменяет данные и генерирует событие**
 
-Представление (View) слой отображения, интерфейс для взаимодействия с пользователем**
+Представление (View) слой отображения, интерфейс для взаимодействия с пользователем, реагирует на действие пользователя и генерирует событие**
 
 Презентер (Presenter) слушает события в пользовательском интерфейсе и принимает решение, извлекает данные из модели**
 
@@ -78,8 +77,8 @@ offAll - Сбросить все обработчики
 -trigger - Сделать коллбек триггер, генерирующий событие при вызове
 
 
-```
-   interface IEvents {
+```ts
+interface IEvents {
     on<T extends object>(event: EventName, callback: (data: T) => void): void;
     emit<T extends object>(event: string, data?: T): void;
     trigger<T extends object>(event: string, context?: Partial<T>): (data: T) => void;
@@ -129,19 +128,20 @@ CardPrice – стоимость товара
 Класс ProductItem - обрабатывает данные товара
 Интерфейс данных товара
 
-```export interface IProductItem {
-  id: string;
-  description: string;
-  image: string;
-  title: string;
-  category: string;
-  price: number | null;
+```ts
+export interface IProductItem {
+    id: string;
+    description: string;
+    image: string;
+    title: string;
+    category: string;
+    price: number | null;
 }
 ```
 
 Класс BasketModel работа с данными полученными от пользователя
 
-```
+```ts
 interface IBasketModel {
     items: Map<string, number>;
     add(id: string): void;
@@ -167,19 +167,19 @@ class BasketModel implements IBasketModel {
 
 -Класс OrderForm - хранит данные полученные от пользователя
 
-```
+```ts
 interface IOrderForm {
-payment: string;
-address: string;
-phone: string;
-email: string;
-total: number;
+    payment: string;
+    address: string;
+    phone: string;
+    email: string;
+    total: number;
 }
 ```
 
 Templates
 
-```
+```ts
 const OrderSuccessTemplate = document.querySelector('#success') as HTMLTemplateElement;
 const cardCatalogTemplate = document.querySelector('#card-catalog') as HTMLTemplateElement;
 const cardPreviewTemplate = document.querySelector('#card-preview') as HTMLTemplateElement;
@@ -190,32 +190,32 @@ const contactsTemplate = document.querySelector('#contacts') as HTMLTemplateElem
 
 //Интерфейс для контактов
 export interface IContacts {
-formContacts: HTMLFormElement;
-inputAll: HTMLInputElement[];
-buttonSubmit: HTMLButtonElement;
-formErrors: HTMLElement;
-render(): HTMLElement;
+    formContacts: HTMLFormElement;
+    inputAll: HTMLInputElement[];
+    buttonSubmit: HTMLButtonElement;
+    formErrors: HTMLElement;
+    render(): HTMLElement;
 }
 
 //Интерфейс формы оповещения об оформления заказа
 export interface ISuccess {
-success: HTMLElement;
-description: HTMLElement;
-button: HTMLButtonElement;
-render(total: number): HTMLElement;
+    success: HTMLElement;
+    description: HTMLElement;
+    button: HTMLButtonElement;
+    render(total: number): HTMLElement;
 }
 ```
 
 //Интерфейс отображения корзины
 
-```
+```ts
 export interface IBasket {
-basket: HTMLElement;
-title: HTMLElement;
-basketList: HTMLElement;
-button: HTMLButtonElement;
-basketPrice: HTMLElement;
-headerBasketButton: HTMLButtonElement;
-headerBasketCounter: HTMLElement;
+    basket: HTMLElement;
+    title: HTMLElement;
+    basketList: HTMLElement;
+    button: HTMLButtonElement;
+    basketPrice: HTMLElement;
+    headerBasketButton: HTMLButtonElement;
+    headerBasketCounter: HTMLElement;
 }
 ```
