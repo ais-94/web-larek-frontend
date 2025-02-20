@@ -56,8 +56,7 @@ yarn build
 
 ### Классы с группировкой по слоям.
 
-### Слой данных:
-
+### Базовый код:
 Класс EventEmitter
 
 Модель данных: Брокер событий
@@ -65,157 +64,102 @@ yarn build
 Методы:
 
 on - Установить обработчик на событие
-
 off - Снять обработчик с события
-
 emit - Инициировать событие с данными
-
 onAll - Слушать все события
-
 offAll - Сбросить все обработчики
+trigger - Сделать коллбек триггер, генерирующий событие при вызове
 
--trigger - Сделать коллбек триггер, генерирующий событие при вызове
-
-
-```ts
-interface IEvents {
-    on<T extends object>(event: EventName, callback: (data: T) => void): void;
-    emit<T extends object>(event: string, data?: T): void;
-    trigger<T extends object>(event: string, context?: Partial<T>): (data: T) => void;
-}
-```
-
-Класс OrderModel - управляет формированием способов оплаты и адресов
-
+Класс class Component<T> -  класс для работы с DOM в дочерних компонентах
 Методы:
+toggleClass - переключить класс
+setText - замениить текстовое содержимое
+setDisabled - сменить статус блокировки
+setHidden - Скрыть элемент
+setVisible - Показать элемент
+setImage -Установить изображение с алтернативным текстом
+render - Вернуть корневой DOM-элемент
 
-setOrderData(user: UserAPI): void - сохраняет данные формы заказа.
+Класс Api - 
+handleResponse - обрабатывает и возвращает ответ сервера
+get(uri: string) - принимает данные url, возвращает ответ
+post(uri: string, data: object, method: ApiPostMethods = 'POST') - отправка данных на сервер
+
+Класс Model<T> - класс, чтобы можно было отличить ее от простых объектов с данными
+Методы: 
+emitChanges -для сообщения, что модель поменялась
+
+
+### Слой данных:
+
+Класс BasketData - работа с данными корзины
+Методы:
+addСard - добавляет товар в корзину
+deleteCardofBasket - удаляет товар из корзины
+clearBasketCards - удаляет все товары из корзины
+getCardsCount - устанавливает количество товаров в корзине
+getBasketPrice - вычисляет и возвращает сумму синапсов всех товаров в корзине
+
+
+Класс ApiModel
+Методы
+getListProductCard - получаем массив объектов(карточек) с сервера.
+postOrderLot - получаем ответ от сервера по сделанному/отправленному заказу.
+
+Класс DataModel принимает и хранит данные продуктов полученные с сервера.
+Метод:
+setData - получает инфмацию о товаре 
+Геттер - 
+productCards - получает информацию о карточки товара
+Сеттеры:
+set productCards - устанавливает данные карточки
+
+Класс OrderModel - устанавливает способы оплаты
+OrderInfo - отправляет данные оплаты
+validateInfo - валидация данных
+
+
+Класс OrderForm  - хранит данные полученные от пользователя.
+Методы:
+setOrderPayment - устанавливает вид оплаты
+setOrderAddress - устанавливает адрес пользователя
+setOrderContact- устанавливает контакты пользователя.
+getOrderData - возвращает объект заказа
+validateOrder - валидация введенных данных
+clearOrder - удаление введенных данных
 
 ### Слой представления:
 
 Класс Modal - управляет отображением модальных окон.
-
 Методы:
-
 open() - открыть окно.
-
 close() - закрыть окно.
 
-Класс BasketView управляет отображением корзины
+Класс Card - отвечает за отображение карточки товара, корзины.
+методы:
+setText - установка информации карточки
+setPrice - установка стоимости или отсутсвие цены
+render - отображение данных карточки 
+Сеттеры:
+cardCategory - устанавливает категорию карточки товара
 
-Методы:  
+Класс Basket - управляет отображением корзины
+renderBasket - отображает список товаров и общую стоимость
 
-renderHeaderBasketCounter отображает список товаров и общую стоимость
+Класс CardInfoView - для отображения информации отдельной карточки
+методы
+renderCardInfo - отображает инфмацию о товаре
 
-renderSumAllProducts - сохраняет и устанавливает сумму товаров в корзине
 
-
-Класс Card – класс отображения карточки товара
-
+Класс Contacts управляет отображением содержимого модального окна и позволяет принять от пользователя номер телефона и Email.
 Методы:
+set selectContacts - устанавливает поля ввода электронной почты и телефона 
 
-CardId - id товара.
 
-CardTitle - название товара
-
-CardImage – изображение товара
-
-CardCategory - категорию товара
-
-CardPrice – стоимость товара
+Класс Success - отображение успешного заказа в модальном окне
+Методы:
+render - отображение успешного заказа в модальном окне
 
 ### Слой презентера:
-Класс ProductItem - обрабатывает данные товара
-Интерфейс данных товара
+Слой презентера реализован в файле index.ts использую методы классов 
 
-```ts
-export interface IProductItem {
-    id: string;
-    description: string;
-    image: string;
-    title: string;
-    category: string;
-    price: number | null;
-}
-```
-
-Класс BasketModel работа с данными полученными от пользователя
-
-```ts
-interface IBasketModel {
-    items: Map<string, number>;
-    add(id: string): void;
-    remove(id: string): void;
-}
-
-class BasketModel implements IBasketModel {
-    items: Map<string, number> = new Map[];
-
-    add[id: string]: void {
-        if (!this.items.has(id)) this.items.set((id, 0)); //создаем новый
-        this.items.set(id, this.items.get(id)! + 1); //прибавляем количество
-    }
-    remove[id: string]: void {
-        if (!this.items.has(id)) return; //если нет, возвращает ничего
-       if (this.items.get(id)! > 0) {
-        this.items.set(id, this.items.get(id)! - 1); //уменьшаем
-        if (this.items.get(id) === 0) this.items.delete(id); //
-       }
-    }
-}
-```
-
--Класс OrderForm - хранит данные полученные от пользователя
-
-```ts
-interface IOrderForm {
-    payment: string;
-    address: string;
-    phone: string;
-    email: string;
-    total: number;
-}
-```
-
-Templates
-
-```ts
-const OrderSuccessTemplate = document.querySelector('#success') as HTMLTemplateElement;
-const cardCatalogTemplate = document.querySelector('#card-catalog') as HTMLTemplateElement;
-const cardPreviewTemplate = document.querySelector('#card-preview') as HTMLTemplateElement;
-const cardBasketTemplate = document.querySelector('#card-basket') as HTMLTemplateElement;
-const basketTemplate = document.querySelector('#basket') as HTMLTemplateElement;
-const OrderFormTemplate = document.querySelector('#order') as HTMLTemplateElement;
-const contactsTemplate = document.querySelector('#contacts') as HTMLTemplateElement;
-
-//Интерфейс для контактов
-export interface IContacts {
-    formContacts: HTMLFormElement;
-    inputAll: HTMLInputElement[];
-    buttonSubmit: HTMLButtonElement;
-    formErrors: HTMLElement;
-    render(): HTMLElement;
-}
-
-//Интерфейс формы оповещения об оформления заказа
-export interface ISuccess {
-    success: HTMLElement;
-    description: HTMLElement;
-    button: HTMLButtonElement;
-    render(total: number): HTMLElement;
-}
-```
-
-//Интерфейс отображения корзины
-
-```ts
-export interface IBasket {
-    basket: HTMLElement;
-    title: HTMLElement;
-    basketList: HTMLElement;
-    button: HTMLButtonElement;
-    basketPrice: HTMLElement;
-    headerBasketButton: HTMLButtonElement;
-    headerBasketCounter: HTMLElement;
-}
-```
