@@ -1,4 +1,4 @@
-//данные карточки
+//данные заказа
 export interface IOrderLot{
     payment: string;
     email: string;
@@ -32,7 +32,7 @@ export interface IOrderLot{
     getProduct(id: string): IProductItem;
     savePreview(product: IProductItem): void;
   }
-    
+ /*   
 //Интерфейс формы заказа для ввода данных пользователя 
 export interface IOrderForm {
 payment: string;
@@ -40,14 +40,13 @@ address: string;
 phone: string;
 email: string;
 total: number;
-}
+}*/
+
+type TOrderForm = Omit<IOrderLot, 'total'|'items'>;
 
 export type TFormErrors = Partial<Record<keyof IOrderLot, string>>;
 
-export type TOrderInput = Pick<
-IOrderLot,
-'payment' | 'address' | 'email' | 'phone'
->;
+
 
 //интерфейс данных пользователя
 export interface IOrderData {
@@ -55,7 +54,7 @@ export interface IOrderData {
 	order: IOrderLot;
 	setOrderPayment(value: string): void;
 	setOrderEmail(value: string): void;
-	setOrderField(field: keyof TOrderInput, value: string): void;
+	setOrderField(field: keyof TOrderForm, value: string): void;
 	setOrderField(field: keyof IOrderLot, value: IOrderLot[keyof IOrderLot]): void;
 	validateOrder(): boolean;
 	clearOrder(): void;
