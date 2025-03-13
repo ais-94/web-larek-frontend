@@ -1,78 +1,57 @@
-//***
-import { IProductItem } from './../types/index';
-import { IEvents } from './base/events';
-import { ensureElement, cloneTemplate } from '../utils/utils';
+import { Component } from './base/Component';
+import { IProduct } from '../types/index';
+import { ensureElement } from '../utils/utils';
 
-
-export interface ICard {
-	render(data: IProductItem): HTMLElement;
-}
-
-export interface IClick {
-	onClick: (event: MouseEvent) => void;
-}
-
-export class Card implements ICard {
-	protected _card: HTMLElement;
-	protected _category: HTMLElement;
+export class Card extends Component<IProduct> {
 	protected _title: HTMLElement;
-	protected _image: HTMLImageElement;
+	protected _category?: HTMLElement;
 	protected _price: HTMLElement;
-	protected _colors = <Record<string, string>>{
+	protected _image: HTMLImageElement;
+	protected _colors: Record<string, string> = {
 		'софт-скил': 'soft',
-		кнопка: 'button',
-		'хард-скил': 'hard',
 		другое: 'other',
 		дополнительное: 'additional',
+		кнопка: 'button',
+		'хард-скил': 'hard',
 	};
 
-	constructor(
-		template: HTMLTemplateElement,
-		protected events: IEvents,
-		actions?: IClick
-	) {
-		//super(container);
-		this._card = template.content
-			.querySelector('.card')
-			.cloneNode(true) as HTMLElement;
-		this._category = ensureElement(
-			'.card__category',
-			this._card
-		) as HTMLElement;
-		this._title = ensureElement('.card__title', this._card) as HTMLElement;
-		this._image = ensureElement('.card__image', this._card) as HTMLImageElement;
-		this._price = ensureElement('.card__price', this._card) as HTMLElement;
+	constructor(container: HTMLElement, onClick?: () => void) {
+		super(container);
+		this._category = ensureElement('.card__category', this.container);
+		this._title = ensureElement('.card__title', this.container);
+		this._image = ensureElement(
+			'.card__image',
+			this.container
+		) as HTMLImageElement;
+		this._price = ensureElement('.card__price', this.container);
 
-		if (actions?.onClick) {
-			this._card.addEventListener('click', actions?.onClick);
+		if (onClick) {
+			container.addEventListener('click', onClick);
 		}
 	}
 
-	protected setText(element: HTMLElement, value: unknown): string {
-		if (element) {
-			return (element.textContent = String(value));
-		}
-	}
-
-	set cardCategory(value: string) {
+	set category(value: string) {
 		this.setText(this._category, value);
-		this._category.className = `card__category card__category_${this._colors[value]}`;
+		this.toggleClass(this._category, this._colors[value] || 'default', true);
 	}
 
-	 setPrice(value: number | null): string {
-		if (value === null) {
-			return 'Бесценно';
+	set title(value: string) {
+		this.setText(this._title, value);
+	}
+
+	set image(value: string) {
+		this.setImage(this._image, value, this._title.textContent || '');
+	}
+
+	set price(value: string) {
+		if (value === 'Бесценно') {
+			this.setText(this._price, "Бесценно");
 		}
-		return String(value) + ' синапсов';
-	}
-
-	render(data: IProductItem): HTMLElement {
-		this._title.textContent = data.title;
-		this._category.textContent = data.category;
-		this.cardCategory = data.category;
-		this._price.textContent = this.setPrice(data.price);
-		this._image.src = data.image;
-		this._image.alt = this._title.textContent;
-		return this._card;
+		else if (value === 'null') {
+			this.setText(this._price, "Бесценно");
+		}
+				else {
+			this.setText(this._price, `${value} синапсов`);
+		}
 	}
 }

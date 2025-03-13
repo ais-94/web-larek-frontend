@@ -1,101 +1,114 @@
-//данные заказа
-export interface IOrderLot{
-    payment: string;
-    email: string;
-    phone: string;
-    address: string;
-    total: number;
-    items: string[];
-  }
+export interface IApiProductModel {
+	getCardList(): Promise<IProduct[]>;
+	createOrder: (order: IOrderLot) => Promise<IOrder>;
+}
 
-  //данные по сделанному заказу
-  export interface IPostOrderLot {
-    id: string;
-    total: number;
-  }
+export interface IProductModel {
+	products: IProduct[];
+	setCards(products: IProduct[]): void;
+}
 
-  //Интерфес данных карточки товара 
-  export interface IProductItem {
-    id: string;
-    description?: string;
-    image: string;
-    title: string;
-    category: string;
-    price: number | null;
-  }
+export interface IBasketModel {
+	basket: IBasket[];
+	addCardToBasket(product: IProduct): void;
+	removeFromBasket(cardId: string): void;
+	TotalPrice(): string;
+	clearBasket(): void;
+}
 
-  export interface IProductsData {
-    products: IProductItem[];
-    preview: string | null;
-    setProducts(products: IProductItem[]): void;
-    getProducts(): IProductItem[];
-    getProduct(id: string): IProductItem;
-    savePreview(product: IProductItem): void;
-  }
- /*   
-//Интерфейс формы заказа для ввода данных пользователя 
-export interface IOrderForm {
-payment: string;
-address: string;
-phone: string;
-email: string;
-total: number;
-}*/
+export interface IOrderLot {
+	id: string;
+	items: IBasketItemApi[];
+	total: number | null;
+	payment?: string;
+	address: string;
+	email: string;
+	phone: string;
+}
 
-type TOrderForm = Omit<IOrderLot, 'total'|'items'>;
+export interface IUserApi {
+	email: string;
+	phone: string;
+	address: string;
+}
 
-export type TFormErrors = Partial<Record<keyof IOrderLot, string>>;
-
-
-
-//интерфейс данных пользователя
-export interface IOrderData {
-	formErrors: TFormErrors;
+export interface IOrderModel {
 	order: IOrderLot;
-	setOrderPayment(value: string): void;
-	setOrderEmail(value: string): void;
-	setOrderField(field: keyof TOrderForm, value: string): void;
-	setOrderField(field: keyof IOrderLot, value: IOrderLot[keyof IOrderLot]): void;
-	validateOrder(): boolean;
-	clearOrder(): void;
+	FormData(data: Partial<IOrderLot>): void;
+	setContactData(data: Partial<IUserApi>): void;
+	validationForm(): string[];
+	getOrderData(): IOrderLot;
 }
 
-  //Интерфейс отображения корзины
+export interface IProductItem {
+	id: string;
+	title: string;
+	description: string;
+	category: string;
+	price: number | null;
+	image: string;
+}
+
+export interface IProduct {
+	id: string;
+	title: string;
+	category: string;
+	price: string;
+	image: string;
+	description?: string;
+}
+
+export interface IBasketItemApi {
+	cardId: string;
+	cardTotal: number;
+}
 export interface IBasket {
-basket: HTMLElement;
-title: HTMLElement;
-basketList: HTMLElement;
-button: HTMLButtonElement;
-basketPrice: HTMLElement;
-headerBasketButton: HTMLButtonElement;
-headerBasketCounter: HTMLElement;
+	id: string;
+	title: string;
+	price: string;
+	cardTotal: number;
 }
 
-//Интерфейс действий в корзине
-export interface IBasketData {
-    items: Map<string, number>;
-    add(id: string): void;
-    remove(id: string): void;
-    clearBasket(): void;
-    getTotalPrice(): string;
+export interface IOrder {
+	id: string;
+	items: IBasket[];
+	total: string;
 }
 
-//Интерфейс для контактов
-export interface IContacts {
-formContacts: HTMLFormElement;
-inputAll: HTMLInputElement[];
-buttonSubmit: HTMLButtonElement;
-formErrors: HTMLElement;
-render(): HTMLElement;
+export interface IModalData {
+	content: HTMLElement;
+	handleEscUp: (event: KeyboardEvent) => void;
 }
 
-//Интерфейс формы оповещения об оформления заказа
+export interface Form {
+	validateForm(): boolean;
+	getData(): Record<string, string>;
+	render(): HTMLElement;
+}
+
+export interface IOrderForm {
+	address: string;
+	payment: string;
+	errors: string;
+	valid: boolean;
+	validation(): void;
+}
+
 export interface ISuccess {
-success: HTMLElement;
-description: HTMLElement;
-button: HTMLButtonElement;
-render(total: number): HTMLElement;
+	total: string;
 }
 
+export interface IPage {
+	counter: number;
+	locked: boolean;
+}
 
+export interface IAction {
+	onClick: () => void;
+}
 
+export interface IContactFormData {
+	email: string;
+	phone: string;
+	validation(): void;
+}
