@@ -1,3 +1,4 @@
+
 # Проектная работа "Веб-ларек"
 
 Стек: HTML, SCSS, TS, Webpack
@@ -294,3 +295,11 @@ yarn build
 `basket:update` - изменение содержимого корзины
 
 `card:remove` - удалить карточку из корзины
+
+### [мой репозиторий][def]
+
+### [ссылка на сайт][def2]
+
+[def]: https://github.com/ais-94/web-larek-frontend.git
+
+[def2]: https://ais-94.github.io/web-larek-frontend/
