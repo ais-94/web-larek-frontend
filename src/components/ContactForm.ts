@@ -1,17 +1,16 @@
 import { Form } from './common/Form';
 import { IEvents } from './base/events';
-import { IContactFormData } from '../types';
+import { IContactformData } from '../types';
 import { ensureElement } from '../utils/utils';
 import { debounce } from 'lodash';
 
-export class ContactForm extends Form<IContactFormData> {
+export class ContactForm extends Form<IContactformData> {
 	protected _email: HTMLInputElement;
 	protected _phone: HTMLInputElement;
 	protected Submitbutton: HTMLButtonElement;
 
 	constructor(container: HTMLFormElement, events: IEvents) {
 		super(container, events);
-		//	this.Submitbutton = container.querySelector('.button_submit');
 		this.Submitbutton = ensureElement<HTMLButtonElement>(
 			'.button_submit',
 			this.container
@@ -34,7 +33,6 @@ export class ContactForm extends Form<IContactFormData> {
 
 		const debouncedFunction = debounce((field: string, value: string) => {
 			events.emit('contacts:field:change', { field, value });
-			console.log('Я сработаю через 1 секунду');
 		}, 10);
 
 		this._email.addEventListener('input', () => {
@@ -47,17 +45,6 @@ export class ContactForm extends Form<IContactFormData> {
 			const value = this._phone.value.trim();
 			debouncedFunction('phone', value);
 			this.validation();
-		});
-
-		container.addEventListener('submit', (e: Event) => {
-			e.preventDefault();
-			if (this.validation) {
-				const formData = {
-					email: this._email.value.trim(),
-					phone: this._phone.value.trim(),
-				};
-				events.emit('contacts:submit', formData);
-			}
 		});
 	}
 

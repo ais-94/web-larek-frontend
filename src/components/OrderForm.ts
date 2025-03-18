@@ -69,13 +69,9 @@ export class OrderForm extends Form<IOrderFormData> implements IOrderForm {
 
 		if (this.valid) {
 			this._submit.disabled = false;
-			console.log('Адрес правильный');
 		}
 
-		if (!this.valid) {
-			console.log('Адрес неправильный');
 		}
-	}
 
 	get payment(): string {
 		return (
@@ -97,4 +93,5 @@ export class OrderForm extends Form<IOrderFormData> implements IOrderForm {
 	set address(value: string) {
 		this._address.value = value;
 	}
+	
 }

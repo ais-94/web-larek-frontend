@@ -35,7 +35,7 @@ export class CardInfoView extends Card {
 
 	private data: IProduct;
 
-	renderCard(card: IProduct): void {
+	renderCard(card: IProduct, isInBasket: boolean): void {
 		this.data = card;
 		this.title = card.title;
 		this.image = card.image;
@@ -44,11 +44,15 @@ export class CardInfoView extends Card {
 		this.category = card.category;
 
 		//Блокировать кнопку покупки при отсутвии цены
-		if (card.price === 'Бесценно') {
+		if (card.price === null) {
 			this._button.disabled = true;
 		} 
 		else if (card.price === null) {
 			this._button.disabled = true;
+		}
+		else if (isInBasket) {
+			this._button.disabled = true;
+			this._button.textContent = 'Добавлено';
 		}
 		else {
 			this._button.disabled = false;

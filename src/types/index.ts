@@ -12,21 +12,26 @@ export interface IBasketModel {
 	basket: IBasket[];
 	addCardToBasket(product: IProduct): void;
 	removeFromBasket(cardId: string): void;
-	TotalPrice(): string;
+	getTotalPrice(): number;
 	clearBasket(): void;
+}
+
+export interface IBasketItem {
+	cardId: string;
+	cardTotal: number;
 }
 
 export interface IOrderLot {
 	id: string;
-	items: IBasketItemApi[];
-	total: number | null;
+	items: IBasketItem[];
+	total: number;
 	payment?: string;
 	address: string;
 	email: string;
 	phone: string;
 }
 
-export interface IUserApi {
+export interface IUserData {
 	email: string;
 	phone: string;
 	address: string;
@@ -34,38 +39,27 @@ export interface IUserApi {
 
 export interface IOrderModel {
 	order: IOrderLot;
-	FormData(data: Partial<IOrderLot>): void;
-	setContactData(data: Partial<IUserApi>): void;
+	formData(data: Partial<IOrderLot>): void;
+	setContactData(data: Partial<IUserData>): void;
 	validationForm(): string[];
-	getOrderData(): IOrderLot;
+	getOrderData(): IOrderLot
 }
 
-export interface IProductItem {
-	id: string;
-	title: string;
-	description: string;
-	category: string;
-	price: number | null;
-	image: string;
-}
 
 export interface IProduct {
 	id: string;
 	title: string;
 	category: string;
-	price: string;
+	price: number | null;
 	image: string;
 	description?: string;
 }
 
-export interface IBasketItemApi {
-	cardId: string;
-	cardTotal: number;
-}
+
 export interface IBasket {
 	id: string;
 	title: string;
-	price: string;
+	price: number | null;
 	cardTotal: number;
 }
 
@@ -107,7 +101,7 @@ export interface IAction {
 	onClick: () => void;
 }
 
-export interface IContactFormData {
+export interface IContactformData {
 	email: string;
 	phone: string;
 	validation(): void;

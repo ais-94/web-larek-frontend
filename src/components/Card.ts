@@ -32,7 +32,7 @@ export class Card extends Component<IProduct> {
 
 	set category(value: string) {
 		this.setText(this._category, value);
-		this.toggleClass(this._category, this._colors[value] || 'default', true);
+		this._category.className = `card__category card__category_${this._colors[value]}`;
 	}
 
 	set title(value: string) {
@@ -45,12 +45,10 @@ export class Card extends Component<IProduct> {
 
 	set price(value: string) {
 		if (value === 'Бесценно') {
-			this.setText(this._price, "Бесценно");
-		}
-		else if (value === 'null') {
-			this.setText(this._price, "Бесценно");
-		}
-				else {
+			this.setText(this._price, 'Бесценно');
+		} else if (value === 'null') {
+			this.setText(this._price, 'Бесценно');
+		} else {
 			this.setText(this._price, `${value} синапсов`);
 		}
 	}

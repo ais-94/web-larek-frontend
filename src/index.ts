@@ -1,6 +1,6 @@
 import './scss/styles.scss';
 import { API_URL } from './utils/constants';
-import { WebApi } from './components/WebAPI';
+import { webLarekApi } from './components/WebLarekApi';
 import { cloneTemplate, ensureElement } from './utils/utils';
 import { AppModel } from './components/AppModel';
 import { Page } from './components/Page';
@@ -35,7 +35,7 @@ const modal = new Modal(modalContainer, events);
 const basketModal = cloneTemplate(basketTemplate);
 const basket = new Basket(basketModal, events);
 
-const api = new WebApi(API_URL);
+const api = new webLarekApi(API_URL);
 const appModel = new AppModel(events);
 const page = new Page(document.body, events);
 const catalog = new Page(ensureElement<HTMLElement>('.gallery'), events);
@@ -76,7 +76,7 @@ events.on('products:updated', (products: IProduct[]) => {
 events.on('card:select', (card: IProduct) => {
 	const cardModal = cloneTemplate(cardModalTemplate);
 	const cardInfoView = new CardInfoView(cardModal, events);
-	cardInfoView.renderCard(card);
+	cardInfoView.renderCard(card, appModel.isInBasket(card));
 	modal.open(cardModal);
 });
 
@@ -87,7 +87,7 @@ events.on('card:add', (item: IProduct) => {
 	//изменить количество на иконке корзины
 	events.emit('basket:update', {
 		items: appModel.basket,
-		total: appModel.TotalPrice(),
+		total: `${appModel.getTotalPrice()} синапсов`,
 	});
 	modal.close();
 });
@@ -102,7 +102,7 @@ events.on('card:remove', (item: IBasket) => {
 	appModel.removeFromBasket(item.id);
 	events.emit('basket:update', {
 		items: appModel.basket,
-		total: appModel.TotalPrice(),
+		total: `${appModel.getTotalPrice()} синапсов`,
 	});
 });
 
@@ -127,7 +127,7 @@ events.on('order:field:change', (data: { field: string; value: string }) => {
 	if (data.field === 'address') {
 		appModel.setContactData({ address: data.value });
 	}
-	appModel.FormData({ [data.field]: data.value });
+	appModel.formData({ [data.field]: data.value });
 	const errors = appModel.validationForm();
 	events.emit('formErrors:change', errors);
 });
@@ -156,46 +156,33 @@ events.on('order:submit', () => {
 	});
 });
 
-events.on('contacts:submit', async () => {
-	try {
-		const errors = appModel.validationForm();
-		if (!errors.length) {
-			const orderData = appModel.getOrderData();
-			if (!orderData.items.length) {
-				return;
-			}
-			try {
-				const result = await api.createOrder(orderData);
-				success.render({
-					total: result.total,
-				});
-				modal.open(successElement);
-				appModel.clearBasket();
-				events.emit('basket:update', {
-					items: appModel.basket,
-					total: appModel.TotalPrice(),
-				});
-
-				orderForm.render({
-					payment: '',
-					address: '',
-					valid: false,
-					errors: [],
-				});
-
-				contactForm.render({
-					email: '',
-					phone: '',
-					valid: false,
-					errors: [],
-				});
-			} catch (apiError) {
-				console.error('API Error:', apiError);
-			}
-		}
-	} catch (error) {
-		console.error('Error:', error);
-	}
+events.on('contacts:submit', () => {
+	api
+		.createOrder(appModel.getOrderData())
+		.then((data) => {
+			success.render({
+				total: data.total,
+			});
+			modal.open(successElement);
+			appModel.clearBasket();
+			events.emit('basket:update', {
+				items: appModel.basket,
+				total: appModel.getTotalPrice(),
+			});
+			orderForm.render({
+				payment: '',
+				address: '',
+				valid: false,
+				errors: [],
+			});
+			contactForm.render({
+				email: '',
+				phone: '',
+				valid: false,
+				errors: [],
+			});
+		})
+		.catch((error) => console.log(error));
 });
 
 events.on('basket:update', (order: IOrder) => {

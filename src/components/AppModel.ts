@@ -3,9 +3,9 @@ import { IEvents } from './base/events';
 import {
 	IProduct,
 	IBasket,
-	IUserApi,
+	IUserData,
 	IOrderLot,
-	IBasketItemApi,
+	IBasketItem,
 	IProductModel,
 	IBasketModel,
 	IOrderModel,
@@ -42,33 +42,35 @@ export class AppModel
 		return this._basket;
 	}
 
+	//проверка наличии карточки в корзине
+	isInBasket(card: IProduct) {
+		return this.basket.some((item) => item.id === card.id);
+	}
+
 	setCards(products: IProduct[]) {
 		this._cards = products;
 		this.emitChanges('products:updated', this._cards);
 	}
 
-	TotalPrice(): string {
+	getTotalPrice() {
 		const total = this._basket.reduce((number, card) => {
-			const price = parseInt(card.price) * card.cardTotal;
+			const price = card.price * card.cardTotal;
 			return number + price;
 		}, 0);
 
-		return `${total} синапсов`;
+		return total;
 	}
 
 	addCardToBasket(product: IProduct) {
 		this._basket.push({
 			id: product.id,
 			title: product.title,
-			price:
-				product.price === 'Бесценно'
-					? product.price
-					: `${product.price} синапсов`,
+			price: product.price,
 			cardTotal: 1,
 		});
 		this.events.emit('basket:update', {
 			items: this._basket,
-			total: this.TotalPrice(),
+			total: this.getTotalPrice(),
 		});
 	}
 
@@ -82,7 +84,7 @@ export class AppModel
 		this.events.emit('basket:change');
 	}
 
-	FormData(data: Partial<IOrderLot>) {
+	formData(data: Partial<IOrderLot>) {
 		this._order = { ...this._order, ...data };
 		this.emitChanges('order:updated', this._order);
 	}
@@ -108,7 +110,7 @@ export class AppModel
 		this._order.payment = payment;
 	}
 
-	setOrderData(items: IBasketItemApi[]) {
+	setOrderData(items: IBasketItem[]) {
 		this._order.items = items.map((item) => ({
 			cardId: String(item.cardId),
 			cardTotal: item.cardTotal,
@@ -118,7 +120,7 @@ export class AppModel
 	getOrderData(): IOrderLot {
 		return {
 			id: this._order.id,
-			total: parseInt(this.TotalPrice()),
+			total: this.getTotalPrice(),
 			items: this._basket.map((item) => ({
 				cardId: item.id,
 				cardTotal: item.cardTotal,
@@ -130,7 +132,19 @@ export class AppModel
 		};
 	}
 
-	setContactData(data: Partial<IUserApi>) {
+	preparedOrder(order: IOrderLot) {
+		return {
+			address: order.address,
+			phone: order.phone,
+			email: order.email,
+			payment: order.payment,
+			total: order.total,
+			items: order.items.map((item) => item.cardId),
+			id: order.id,
+		};
+	}
+
+	setContactData(data: Partial<IUserData>) {
 		this._order = {
 			...this._order,
 			...data,

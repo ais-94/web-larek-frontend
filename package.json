@@ -45,7 +45,7 @@
     "format": "prettier ./src --write",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
-    },
+  },
   "dependencies": {
     "lodash": "^4.17.21"
   }
